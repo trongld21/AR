@@ -1,34 +1,15 @@
 <!DOCTYPE html>
 <html>
-  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   <!-- we import arjs version without NFT but with marker + location based support -->
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-  <script>
-    window.onload = function () {
-      document
-        .querySelector(".say-hi-button")
-        .addEventListener("click", function () {
-          // here you can change also a-scene or a-entity properties, like
-          // changing your 3D model source, size, position and so on
-          // or you can just open links, trigger actions...
-          alert("Hi there!");
-        });
-    };
-  </script>
-  <style>
-    .buttons {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 5em;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 10;
-    }
 
-    .say-hi-button {
+  <script src="https://static.holostream.arcturus.studio/release/2021.1.5/remote/HoloStream-2021.1.5.min.js"></script>
+
+  <script src="components.js"></script>
+
+  <style>
+    .tap-button {
       padding: 0.25em;
       border-radius: 4px;
       border: none;
@@ -36,21 +17,30 @@
       color: black;
       width: 4em;
       height: 2em;
+      position: fixed;
+      z-index: 10;
+      bottom: 10px;
     }
   </style>
-  <body style="margin : 0px; overflow: hidden;">
-    <div class="buttons">
-      <button class="say-hi-button">SAY HI!</button>
-    </div>
-    <a-scene embedded arjs>
-      <a-marker preset="hiro">
-        <a-entity
-          position="0 0 0"
-          scale="0.05 0.05 0.05"
-          gltf-model="https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf"
-        ></a-entity>
-      </a-marker>
-      <a-entity camera></a-entity>
+  <body>
+    <a-scene debug>
+        <a-camera id="camera" />
+        <a-entity position="0 0 0" visible="false">
+            <!-- Include a volumetric video inside our instant tracker -->
+            <holostream-entity id="holo" src="https://holostream-dev.arcturus.studio/media/23f517e8-a10e-48ae-bc76-8ccde959937d/stream/dash/manifest.mpd"></holostream-entity>
+
+            <!-- Include a hotspot which will give users an idea where they are placing content -->
+            <a-entity id="hotspot" geometry="primitive:plane;" scale="2 2 2" position="0 0.001 0" rotation="-90 0 0" material="src: #hotspotTexture; transparent: true; alphaTest: 0.5"></a-entity>
+            
+            <!-- Include a plane which will receive shadows -->
+            <a-entity id="shadowPlane" geometry="primitive:plane; width: 10; height: 10" material="color: red; side:double"  rotation="-90 0 0" shadow="receive: true" shadow-material ></a-entity>
+            
+            <!-- Include a light source to cast shadows -->
+            <a-entity id="dirLight" light="type: directional; castShadow: true" position="0 30 0" shadow-opts  ></a-entity>
+        </a-entity>
     </a-scene>
+    
+    <button class="tap-button" id="tap-button">Tap to place!</button>
   </body>
 </html>
+
